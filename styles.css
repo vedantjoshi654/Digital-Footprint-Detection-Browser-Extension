@@ -1,0 +1,324 @@
+/* styles.css */
+:root {
+  --bg-color: #f5f7fa;
+  --text-color: #2d3748;
+  --panel-bg: #ffffff;
+  --btn-bg: #2b6cb0;
+  --btn-hover-bg: #21548a;
+  --accent-color: #3182ce;
+  --border-color: #e2e8f0;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] {
+  --bg-color: #1a202c;
+  --text-color: #e2e8f0;
+  --panel-bg: #2d3748;
+  --btn-bg: #4299e1;
+  --btn-hover-bg: #3182ce;
+  --accent-color: #63b3ed;
+  --border-color: #4a5568;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  width: 320px;
+  padding: 16px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+#tabs {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px 12px;
+  cursor: pointer;
+  background-color: var(--btn-bg);
+  border: none;
+  border-radius: 6px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 13px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.tab-btn:hover {
+  background-color: var(--btn-hover-bg);
+  transform: translateY(-1px);
+}
+
+.tab-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-color);
+}
+
+.btn-glitch-fill {
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid transparent;
+  padding: 8px 12px;
+  min-width: 150px;
+  text-transform: none;
+  cursor: pointer;
+  border-radius: 6px;
+  background-color: var(--btn-bg);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 13px;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-glitch-fill:hover,
+.btn-glitch-fill:focus {
+  background-color: var(--accent-color);
+  color: #ffffff;
+  border-color: transparent;
+  transform: translateY(-1px);
+  animation: none;
+}
+
+.tab-panel {
+  display: none;
+  background: var(--panel-bg);
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  margin-bottom: 12px;
+}
+
+.tab-panel:first-child {
+  display: block;
+}
+
+.tab-panel h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 12px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.log-container {
+  margin-top: 12px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 12px;
+  max-height: 250px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) var(--panel-bg);
+}
+
+.log-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.log-container::-webkit-scrollbar-track {
+  background: var(--panel-bg);
+}
+
+.log-container::-webkit-scrollbar-thumb {
+  background-color: var(--accent-color);
+  border-radius: 3px;
+}
+
+.log-entry {
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background-color: var(--panel-bg);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.log-entry:hover {
+  background-color: #edf2f7;
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .log-entry:hover {
+  background-color: #4a5568;
+}
+
+.log-entry strong {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.log-entry pre {
+  margin: 4px 0;
+  font-size: 12px;
+  color: #718096;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.log-entry em {
+  font-size: 12px;
+  color: #718096;
+}
+
+.analysis-container {
+  background: var(--panel-bg);
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  text-align: center;
+}
+
+#history-list .log-entry {
+  background-color: #e9f2ff;
+}
+
+[data-theme="dark"] #history-list .log-entry {
+  background-color: #3f4d67;
+}
+
+#detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: none;
+}
+
+#detail-modal-content {
+  background-color: var(--panel-bg);
+  margin: 10% auto;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+#detail-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #a0aec0;
+  transition: color 0.2s ease;
+}
+
+#detail-modal-close:hover {
+  color: var(--text-color);
+}
+
+.popup-notification {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  background-color: #2d3748;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1100;
+  opacity: 0;
+  font-size: 13px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+[data-theme="dark"] .popup-notification {
+  background-color: #edf2f7;
+  color: #2d3748;
+}
+
+#log-search {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-color);
+  background-color: var(--panel-bg);
+  transition: border-color 0.2s ease;
+}
+
+#log-search:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.1);
+}
+
+#log-search::placeholder {
+  color: #a0aec0;
+}
+
+canvas {
+  border-radius: 6px;
+  background-color: var(--panel-bg);
+  padding: 8px;
+}
+
+input[type="checkbox"],
+input[type="color"],
+input[type="number"],
+select {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: var(--text-color);
+  background-color: var(--panel-bg);
+  transition: border-color 0.2s ease;
+}
+
+input[type="checkbox"]:focus,
+input[type="color"]:focus,
+input[type="number"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.1);
+}
+
+label {
+  font-size: 13px;
+  color: var(--text-color);
+  margin-right: 8px;
+}
+
+#device-footer {
+  border-top: 1px solid var(--border-color);
+  padding: 12px 0;
+  font-size: 13px;
+  color: #718096;
+}
+
+#device-footer-info {
+  background-color: var(--panel-bg);
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px var(--shadow-color);
+}
+
+/* Smooth transitions for theme changes */
+:root, [data-theme="dark"] {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

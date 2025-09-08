@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Digital Footprint Detection",
+  "version": "1.7",
+  "description": "Monitors cookies, localStorage, DNS, and advanced tracking. Features risk analysis, session history, ad blocking, remediation, and a dashboard with analytics.",
+  "permissions": [
+    "cookies",
+    "activeTab",
+    "storage",
+    "notifications",
+    "webRequest",
+    "webRequestBlocking",
+    "tabs",
+    "history",
+    "webNavigation"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icon.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

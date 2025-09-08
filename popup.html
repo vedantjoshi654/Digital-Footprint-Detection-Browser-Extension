@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Cookies Tracker Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    function loadChartJS(callback) {
+      const script = document.createElement('script');
+      script.src = "https://cdn.jsdelivr.net/npm/chart.js";
+      script.onload = callback;
+      script.onerror = () => console.error("Failed to load Chart.js");
+      document.head.appendChild(script);
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div id="tabs">
+    <button class="tab-btn btn-glitch-fill" data-tab="logs">Logs</button>
+    <button class="tab-btn btn-glitch-fill" data-tab="cookies">Cookies</button>
+    <button class="tab-btn btn-glitch-fill" data-tab="risk">Risk Analysis</button>
+    <button class="tab-btn btn-glitch-fill" data-tab="dashboard">Dashboard</button>
+    <button class="tab-btn btn-glitch-fill" data-tab="history">History</button>
+    <button class="tab-btn btn-glitch-fill" data-tab="settings">Settings</button>
+    <button class="tab-btn btn-glitch-fill" data-tab="about">About</button>
+    <button class="tab-btn btn-glitch-fill" data-tab="device-info">Device Info</button>
+  </div>
+  
+  <div id="tab-content">
+    <div class="tab-panel" id="logs-panel">
+      <h2>Tracking Logs</h2>
+      <div class="counters">🍪 Cookies: <span id="cookie-counter">0</span> | 🔍 Trackers: <span id="tracker-counter">0</span></div>
+      <div class="controls">
+        <button id="clear-logs" class="btn-glitch-fill">Clear Logs</button>
+        <button id="export-logs" class="btn-glitch-fill">Export Logs</button>
+        <button id="export-pdf" class="btn-glitch-fill">Export PDF</button>
+        <button id="help-btn" class="btn-glitch-fill">Help</button>
+      </div>
+      <div id="help-info" style="display:none;">
+        <strong>Help Information:</strong>
+        <p><em>Logs</em>: Displays tracking events (cookie changes and localStorage scans). Each log includes the cookie name, domain, timestamp, and decoded value. Tap a log for details.</p>
+        <p><em>Cookies</em>: Lists cookies for the active site with details (name, domain, expiration, decoded value).</p>
+        <p><em>History</em>: Records session history (domain, open/close times, and cookie snapshot when the tab was closed). Tap a session for details.</p>
+        <strong>Risk Score Calculation:</strong>
+        <ul>
+          <li>+1 if third-party (domain mismatch)</li>
+          <li>+0.5 if not secure</li>
+          <li>+0.5 if not HttpOnly</li>
+          <li>+0.5 if SameSite missing/unspecified</li>
+          <li>+1 if expiration > 1 week</li>
+          <li>+1 if known tracker</li>
+          <li>+1 if cookie size > 1024 bytes</li>
+          <li><em>Max 6 points per cookie; scaled to 0–10.</em></li>
+        </ul>
+        <p><a href="https://forms.gle/zu9xjaYbx383mUhr7" target="_blank">Report a bug</a></p>
+      </div>
+      <input type="text" id="log-search" placeholder="Search logs..." />
+      <div id="tracking-list" class="log-container"></div>
+    </div>
+    
+    <div class="tab-panel" id="cookies-panel">
+      <h2>Cookies</h2>
+      <div id="cookie-list" class="log-container"></div>
+    </div>
+    
+    <div class="tab-panel" id="risk-panel">
+      <h2>Risk Analysis</h2>
+      <button id="refresh-risk" class="btn-glitch-fill">Refresh Risk</button>
+      <div id="risk-analysis" class="analysis-container"></div>
+    </div>
+    
+    <div class="tab-panel" id="dashboard-panel">
+      <h2>Dashboard</h2>
+      <canvas id="riskChart" width="280" height="200"></canvas>
+      <canvas id="removalChart" width="280" height="200"></canvas>
+      <canvas id="exposureChart" width="280" height="200"></canvas>
+      <canvas id="uniquenessChart" width="280" height="200"></canvas>
+      <script>
+        document.querySelector("[data-tab='dashboard']").addEventListener("click", () => loadChartJS(buildDashboard));
+      </script>
+    </div>
+    
+    <div class="tab-panel" id="history-panel">
+      <h2>History</h2>
+      <div id="history-list" class="log-container"></div>
+      <button id="clear-history" class="btn-glitch-fill">Clear History</button>
+    </div>
+    
+    <div class="tab-panel" id="settings-panel">
+      <h2>Settings</h2>
+      <div>
+        <strong>Risk Weights:</strong><br>
+        Third-party: <input type="number" id="weight-third" value="1" step="0.1"><br>
+        Secure missing: <input type="number" id="weight-secure" value="0.5" step="0.1"><br>
+        HttpOnly missing: <input type="number" id="weight-httponly" value="0.5" step="0.1"><br>
+        SameSite missing: <input type="number" id="weight-samesite" value="0.5" step="0.1"><br>
+        Expiration: <input type="number" id="weight-expiration" value="1" step="0.1"><br>
+        Tracker: <input type="number" id="weight-tracker" value="1" step="0.1"><br>
+        <button id="save-settings" class="btn-glitch-fill">Save Settings</button>
+      </div>
+      <div>
+        <label for="badge-color">Badge Color: </label>
+        <input type="color" id="badge-color" value="#FF0000">
+      </div>
+      <div>
+        <label>
+          <input type="checkbox" id="notifications-toggle" checked>
+          Enable Notifications
+        </label>
+      </div>
+      <div>
+        <label>
+          <input type="checkbox" id="tracking-toggle" checked>
+          Tracking Active
+        </label>
+      </div>
+      <div>
+        <strong>Whitelist Domains:</strong><br>
+        <input type="text" id="whitelist" placeholder="e.g., example.com, trusted.com" />
+      </div>
+      <div>
+        <button id="remediate-cookies" class="btn-glitch-fill">Remediate Cookies</button>
+        <button id="block-high-risk" class="btn-glitch-fill">Block High-Risk Cookies</button>
+        <button id="update-tracker-list" class="btn-glitch-fill">Update Tracker List</button>
+        <select id="language-toggle">
+          <option value="en" selected>English</option>
+          <option value="es">Español</option>
+        </select>
+      </div>
+      <div>
+        <label for="theme-toggle">Dark Mode: </label>
+        <input type="checkbox" id="theme-toggle">
+      </div>
+      <div>
+        <label>
+          <input type="checkbox" id="block-fingerprinting">
+          Block Fingerprinting
+        </label>
+        <button id="clear-fingerprint" class="btn-glitch-fill">Clear Fingerprint</button>
+      </div>
+    </div>
+    
+    <div class="tab-panel" id="about-panel">
+      <h2>About</h2>
+      <p>Digital Footprint Detection</p>
+      <p>Monitors cookies, localStorage, DNS, and advanced tracking (e.g., fingerprinting, network activity). Features risk analysis, session history, ad blocking, remediation, and a dashboard with analytics.</p>
+    </div>
+
+    <div class="tab-panel" id="device-info-panel">
+      <h2>Device Info</h2>
+      <pre id="device-info" style="white-space: pre-wrap; word-break: break-all;"></pre>
+      <h3>DNS Information</h3>
+      <pre id="dns-servers" style="white-space: pre-wrap; word-break: break-all;"></pre>
+    </div>
+  </div>
+  
+  <div id="detail-modal">
+    <div id="detail-modal-content">
+      <span id="detail-modal-close">×</span>
+      <div id="detail-modal-body"></div>
+    </div>
+  </div>
+  
+  <div id="device-footer" style="padding:10px; font-size:0.85em; border-top:1px solid #ccc; margin-top:10px;">
+    <button id="toggle-device-info" class="btn-glitch-fill">Show Device Specs</button>
+    <pre id="device-footer-info" style="display:none; white-space: pre-wrap; word-break: break-all; margin-top:8px;"></pre>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
