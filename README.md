@@ -74,6 +74,7 @@ Use this for safeguarding user data while persisting or exporting reports.
 ## 📦 Repository Structure
 
 Digital-Footprint-Detection-Browser-Extension/
+
 ├── background.js            # Manages global extension logic
 
 ├── content.js               # Page-level scanning for trackers/fingerprint
