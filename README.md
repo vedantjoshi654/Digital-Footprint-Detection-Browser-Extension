@@ -75,13 +75,21 @@ Use this for safeguarding user data while persisting or exporting reports.
 
 Digital-Footprint-Detection-Browser-Extension/
 ├── background.js            # Manages global extension logic
+
 ├── content.js               # Page-level scanning for trackers/fingerprint
+
 ├── dataEncryption.js        # (Optional) Secure storage/encryption utilities
+
 ├── icon.png                 # Extension icon
+
 ├── manifest.json            # Chrome extension metadata & permissions
+
 ├── popup.html               # Popup dashboard UI
+
 ├── popup.js                 # Popup UI controller
+
 ├── styles.css               # UI styling
+
 └── README.md                # Project documentation
 
 
